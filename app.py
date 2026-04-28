@@ -81,4 +81,54 @@ def gpt():
 if __name__ == '__main__':
     # 開發用；部署用 gunicorn（見下方）
     app.run(host='0.0.0.0', debug=False)
+    from flask import Flask, render_template, request
+import requests
+from datetime import datetime
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return '<h1>首頁</h1><a href="/stock">查詢個股</a>'
+
+@app.route('/stock', methods=['GET', 'POST'])
+def stock():
+    question = ""
+    answer = ""
+
+    if request.method == 'POST':
+        stock_no = request.form['question']
+        question = stock_no
+
+        today = datetime.today().strftime('%Y%m%d')
+
+        url = f"https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&date={today}&stockNo={stock_no}"
+
+        res = requests.get(url, headers={
+            "User-Agent": "Mozilla/5.0"
+        })
+
+        data = res.json()
+
+        try:
+            close_prices = []
+
+            for row in data['data']:
+                price = row[6].replace(',', '')
+                close_prices.append(float(price))
+
+            if close_prices:
+                max_price = max(close_prices)
+                min_price = min(close_prices)
+                answer = f"最高收盤價: {max_price} / 最低收盤價: {min_price}"
+            else:
+                answer = "查無資料"
+
+        except:
+            answer = "輸入錯誤或查無此股票"
+
+    return render_template("stock.html", question=question, answer=answer)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
