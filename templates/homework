@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ask a Question</title>
+    <title>查詢股價</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,6 +25,14 @@
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+        }
+        input[type="submit"], input[type="button"] {
+            padding: 10px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -34,11 +42,13 @@
     <section>
         <div class="form-box">
             <form action="/stock" method="post">
-                <label for="question">查詢股價:</label><br>
-                <input type="text" id="question" name="question" value="{{ question }}"><br><br>
-                <label for="answer">昨天的股價:</label><br>
-                <input type="text" id="answer" name="answer" readonly value="{{ answer }}"><br><br>
-                <input type="submit" value="送出">
+                <label>輸入股票代號:</label><br>
+                <input type="text" name="question" value="{{ question }}"><br><br>
+
+                <label>結果:</label><br>
+                <input type="text" name="answer" readonly value="{{ answer }}"><br><br>
+
+                <input type="submit" value="查詢">
                 <input type="button" value="回首頁" onclick="window.location.href='/'">
             </form>
         </div>
